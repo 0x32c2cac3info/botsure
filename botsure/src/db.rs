@@ -38,6 +38,19 @@ pub(crate) async fn complete(
     Ok(format!("Completed `{}`!", todo.note))
 }
 
+pub(crate) async fn list_all(pool: &PgPool) -> Result<String, sqlx::Error> {
+    let todos: Vec<Todo> = sqlx::query_as("SELECT note, id FROM todos ORDER BY id")
+        .bind(user_id)
+        .fetch_all(pool)
+        .await?;
+
+    let mut response = format!("You have {} pending todos:\n", todos.len());
+    for (i, todo) in todos.iter().enumerate() {
+        writeln!(&mut response, "{}. {}", i + 1, todo.note).unwrap();
+    }
+
+    Ok(response)
+}
 pub(crate) async fn list(pool: &PgPool, user_id: i64) -> Result<String, sqlx::Error> {
     let todos: Vec<Todo> =
         sqlx::query_as("SELECT note, id FROM todos WHERE user_id = $1 ORDER BY id")
