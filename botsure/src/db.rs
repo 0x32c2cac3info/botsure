@@ -25,7 +25,6 @@ pub(crate) async fn complete(
     let todo: Todo = sqlx::query_as(
         "SELECT id, note FROM todos WHERE user_id = $1 ORDER BY id LIMIT 1 OFFSET $2",
     )
-    .bind(user_id)
     .bind(index - 1)
     .fetch_one(pool)
     .await?;
@@ -40,7 +39,6 @@ pub(crate) async fn complete(
 
 pub(crate) async fn list_all(pool: &PgPool) -> Result<String, sqlx::Error> {
     let todos: Vec<Todo> = sqlx::query_as("SELECT note, id FROM todos ORDER BY id")
-        .bind(user_id)
         .fetch_all(pool)
         .await?;
 

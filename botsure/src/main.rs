@@ -51,7 +51,7 @@ impl EventHandler for Bot {
                             _ => "Command not implemented".to_string(),
                         },
                         "list" | "ls" => db::list(&self.database, user_id).await.unwrap(),
-                        "list-all" | "la" | "list_all" | "listall" => {
+                        "list-all" | "la" | "list_all" | "listall" | "--list-all" => {
                             db::list_all(&self.database).await.unwrap()
                         }
                         _ => "Command not implemented".to_string(),
